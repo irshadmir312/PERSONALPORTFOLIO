@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  name      String?
+  image     String?
+  mode      String   @default("explorer") // recruiter, client, student, explorer
+  xp        Int      @default(0)
+  level     Int      @default(1)
+  badges    String   @default("[]") // JSON array of badge names
+  isGuest   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chatMessages    ChatMessage[]
+  interactions    UserInteraction[]
+  bookmarks       Bookmark[]
+  quizAttempts    QuizAttempt[]
+  contactRequests ContactRequest[]
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String   // user, assistant
+  content   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model UserInteraction {
+  id        String   @id @default(cuid())
+  userId    String
+  section   String   // hero, projects, journey, skills, contact, etc.
+  action    String   // view, click, interact, complete
+  metadata  String?  // JSON
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+}
+
+model QuizAttempt {
+  id        String   @id @default(cuid())
+  userId    String
+  quizId    String
+  score     Int
+  total     Int
+  answers   String   // JSON
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ContactRequest {
+  id          String   @id @default(cuid())
+  userId      String?
+  name        String
+  email       String
+  budget      String?
+  projectType String?
+  timeline    String?
+  message     String?
+  proposal    String?  // AI-generated proposal
+  createdAt   DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Visitor {
+  id        String   @id @default(cuid())
+  ip        String?
+  path      String?
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
