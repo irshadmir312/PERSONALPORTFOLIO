@@ -1,0 +1,305 @@
+'use client'
+
+import { useState, useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
+import {
+  Phone, Mail, MapPin, CheckCircle2, Loader2,
+  Send, MessageCircle, User, ExternalLink,
+} from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+
+const contactSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  phone: z.string().min(7, 'Please enter a valid phone number'),
+  email: z.string().email('Please enter a valid email address'),
+  message: z.string().min(10, 'Message must be at least 10 characters'),
+})
+
+type ContactFormData = z.infer<typeof contactSchema>
+
+const contactCards = [
+  {
+    icon: MessageCircle,
+    label: 'WhatsApp',
+    value: '+91 9622334883',
+    href: 'https://wa.me/919622334883?text=Hi%20Irshad!%20I%20found%20your%20portfolio%20and%20wanted%20to%20connect.',
+    color: 'text-[#25D366]',
+    bg: 'bg-[#25D366]/5',
+    border: 'border-[#25D366]/20',
+  },
+  {
+    icon: Mail,
+    label: 'Email',
+    value: 'irshadmir312@gmail.com',
+    href: 'mailto:irshadmir312@gmail.com',
+    color: 'text-cyan-400',
+    bg: 'bg-cyan-500/5',
+    border: 'border-cyan-500/20',
+  },
+  {
+    icon: MapPin,
+    label: 'Location',
+    value: 'India',
+    href: null,
+    color: 'text-purple-400',
+    bg: 'bg-purple-500/5',
+    border: 'border-purple-500/20',
+  },
+]
+
+export default function ConnectMe() {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const ref = useRef<HTMLElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-80px' })
+
+  const form = useForm<ContactFormData>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: '',
+      phone: '',
+      email: '',
+      message: '',
+    },
+  })
+
+  async function onSubmit(data: ContactFormData) {
+    setIsSubmitting(true)
+    try {
+      const res = await fetch('/api/contact-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      if (!res.ok) throw new Error('Failed to send message')
+      setSubmitSuccess(true)
+      form.reset()
+      setTimeout(() => setSubmitSuccess(false), 5000)
+    } catch {
+      // Error handled silently — toast is not critical
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <section id="contact" ref={ref} className="relative py-20 sm:py-28">
+      <div className="absolute inset-0 gradient-bg opacity-50" />
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            Connect <span className="neon-text text-emerald-400">With Me</span>
+          </h2>
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            Have a project in mind or just want to say hello? Drop me a message and I&apos;ll get back to you soon.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-5 gap-6">
+          {/* Contact Info Cards — Left Column */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="lg:col-span-2 space-y-4"
+          >
+            {contactCards.map((card) => {
+              const Icon = card.icon
+              const Wrapper = card.href ? 'a' : 'div'
+              const linkProps = card.href
+                ? { href: card.href, target: '_blank', rel: 'noopener noreferrer' }
+                : {}
+
+              return (
+                <Card
+                  key={card.label}
+                  className={`glass p-4 card-hover ${card.border}`}
+                >
+                  <Wrapper {...linkProps} className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg ${card.bg} flex items-center justify-center shrink-0`}>
+                      <Icon className={`w-5 h-5 ${card.color}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-muted-foreground">{card.label}</p>
+                      <p className={`text-sm font-medium ${card.color} truncate`}>{card.value}</p>
+                    </div>
+                    {card.href && (
+                      <ExternalLink className="w-4 h-4 text-muted-foreground shrink-0" />
+                    )}
+                  </Wrapper>
+                </Card>
+              )
+            })}
+
+            {/* Availability Badge */}
+            <Card className="glass p-4 border-emerald-500/20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Status</p>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 text-xs">
+                      Available for Hire
+                    </Badge>
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+
+          {/* Contact Form — Right Column */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="lg:col-span-3"
+          >
+            <Card className="glass neon-border overflow-hidden">
+              <div className="p-6 sm:p-8">
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                    {/* Full Name */}
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-1.5">
+                            <User className="w-3.5 h-3.5 text-emerald-400" />
+                            Full Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="John Doe"
+                              className="bg-white/5 border-white/10 focus:border-emerald-500/50"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Phone & Email Row */}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-1.5">
+                              <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                              Phone Number
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="tel"
+                                placeholder="+91 9876543210"
+                                className="bg-white/5 border-white/10 focus:border-emerald-500/50"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-1.5">
+                              <Mail className="w-3.5 h-3.5 text-emerald-400" />
+                              Email Address
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="email"
+                                placeholder="you@example.com"
+                                className="bg-white/5 border-white/10 focus:border-emerald-500/50"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Message */}
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Message</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Tell me about your project, idea, or just say hi..."
+                              className="min-h-[120px] bg-white/5 border-white/10 resize-none focus:border-emerald-500/50"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting || submitSuccess}
+                      className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-semibold gap-2 h-11"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : submitSuccess ? (
+                        <>
+                          <CheckCircle2 className="w-4 h-4" />
+                          Message Sent! ✅
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          Send Message
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  )
+}

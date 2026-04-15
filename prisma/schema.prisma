@@ -82,6 +82,7 @@ model ContactRequest {
   userId      String?
   name        String
   email       String
+  phone       String?
   budget      String?
   projectType String?
   timeline    String?

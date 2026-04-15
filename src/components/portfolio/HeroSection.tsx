@@ -281,26 +281,34 @@ export default function HeroSection() {
   )
 }
 
-function AnimatedCounter({ value }: { value: number }) {
+function AnimatedCounter({ value, delay = 1000 }: { value: number; delay?: number }) {
   const [count, setCount] = useState(0)
+  const hasStarted = useRef(false)
 
   useEffect(() => {
-    let start = 0
-    const duration = 2000
-    const step = value / (duration / 16)
+    if (hasStarted.current) return
+    hasStarted.current = true
 
-    const timer = setInterval(() => {
-      start += step
-      if (start >= value) {
-        setCount(value)
-        clearInterval(timer)
-      } else {
-        setCount(Math.floor(start))
-      }
-    }, 16)
+    const startTimer = setTimeout(() => {
+      let current = 0
+      const duration = 2000
+      const step = value / (duration / 16)
 
-    return () => clearInterval(timer)
-  }, [value])
+      const timer = setInterval(() => {
+        current += step
+        if (current >= value) {
+          setCount(value)
+          clearInterval(timer)
+        } else {
+          setCount(Math.floor(current))
+        }
+      }, 16)
+
+      return () => clearInterval(timer)
+    }, delay)
+
+    return () => clearTimeout(startTimer)
+  }, [value, delay])
 
   return <>{count}</>
 }

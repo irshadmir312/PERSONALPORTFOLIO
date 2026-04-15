@@ -8,12 +8,15 @@ import ModeSelector from '@/components/portfolio/ModeSelector'
 import JourneyMap from '@/components/portfolio/JourneyMap'
 import ProjectLab from '@/components/portfolio/ProjectLab'
 import WhyHireMe from '@/components/portfolio/WhyHireMe'
+import KillerQuotes from '@/components/portfolio/KillerQuotes'
+import IslamicQuotes from '@/components/portfolio/IslamicQuotes'
 import SkillsShowcase from '@/components/portfolio/SkillsShowcase'
 import LiveDashboard from '@/components/portfolio/LiveDashboard'
 import SkillTesting from '@/components/portfolio/SkillTesting'
 import GamificationPanel from '@/components/portfolio/GamificationPanel'
-import SmartContact from '@/components/portfolio/SmartContact'
+import ConnectMe from '@/components/portfolio/ConnectMe'
 import AIChatBot from '@/components/portfolio/AIChatBot'
+import WhatsAppButton from '@/components/portfolio/WhatsAppButton'
 import Footer from '@/components/portfolio/Footer'
 import { usePortfolioStore } from '@/store/portfolio'
 
@@ -50,6 +53,14 @@ export default function Home() {
 
         <div className="divider-gradient" />
 
+        <KillerQuotes />
+
+        <div className="divider-gradient" />
+
+        <IslamicQuotes />
+
+        <div className="divider-gradient" />
+
         <SkillsShowcase />
 
         <div className="divider-gradient" />
@@ -66,9 +77,10 @@ export default function Home() {
 
         <div className="divider-gradient" />
 
-        <SmartContact />
+        <ConnectMe />
       </main>
 
+      <WhatsAppButton />
       <AIChatBot />
       <Footer />
     </div>
