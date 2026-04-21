@@ -34,78 +34,42 @@ export default function Home() {
   }, [visitSection])
 
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="min-h-screen flex flex-col relative gradient-bg">
       <ParticleBackground />
       <Navigation />
 
       <main className="flex-1 relative z-10">
         <HeroSection />
 
-        <div className="divider-gradient" />
-
         <PersonalStory />
-
-        <div className="divider-gradient" />
 
         <ModeSelector />
 
-        <div className="divider-gradient" />
-
-        <JourneyMap />
-
-        <div className="divider-gradient" />
-
         <ProjectLab />
-
-        <div className="divider-gradient" />
 
         <CaseStudies />
 
-        <div className="divider-gradient" />
-
         <Services />
-
-        <div className="divider-gradient" />
 
         <WhyHireMe />
 
-        <div className="divider-gradient" />
-
         <KillerQuotes />
-
-        <div className="divider-gradient" />
 
         <IslamicQuotes />
 
-        <div className="divider-gradient" />
-
         <SkillsShowcase />
-
-        <div className="divider-gradient" />
 
         <Certifications />
 
-        <div className="divider-gradient" />
-
         <LiveDashboard />
-
-        <div className="divider-gradient" />
 
         <SkillTesting />
 
-        <div className="divider-gradient" />
-
         <Testimonials />
-
-        <div className="divider-gradient" />
 
         <BlogInsights />
 
-        <div className="divider-gradient" />
-
         <GamificationPanel />
-
-        <div className="divider-gradient" />
 
         <ConnectMe />
       </main>

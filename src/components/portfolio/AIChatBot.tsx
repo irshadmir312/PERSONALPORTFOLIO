@@ -149,12 +149,13 @@ export default function AIChatBot() {
             }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className={`fixed bottom-20 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 rounded-xl overflow-hidden glass-strong neon-border flex flex-col ${
+            className={`fixed bottom-20 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[380px] rounded-2xl overflow-hidden flex flex-col border border-white/[0.08] ${
               isMinimized ? '' : 'h-[min(600px,calc(100vh-120px))]'
             }`}
+            style={{ background: 'rgba(10, 10, 18, 0.98)', backdropFilter: 'blur(40px)' }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/[0.02]">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-[#0e0e1a]">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center">
                   <Bot className="w-4 h-4 text-black" />
@@ -167,7 +168,7 @@ export default function AIChatBot() {
                     </span>
                     {apiStatus === 'connected' && (
                       <span className="flex items-center gap-0.5 text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
-                        <Wifi className="w-2.5 h-2.5" /> OpenAI
+                        <Wifi className="w-2.5 h-2.5" /> AI Online
                       </span>
                     )}
                     {apiStatus === 'disconnected' && (
@@ -215,7 +216,7 @@ export default function AIChatBot() {
                   className="flex flex-col overflow-hidden"
                 >
                   {/* Messages */}
-                  <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
+                  <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar bg-[#0a0a12]">
                     {chatMessages.length === 0 && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -322,7 +323,7 @@ export default function AIChatBot() {
                   )}
 
                   {/* Input */}
-                  <div className="p-3 border-t border-white/5">
+                  <div className="p-3 border-t border-white/[0.06] bg-[#0e0e1a]">
                     <form
                       onSubmit={(e) => { e.preventDefault(); sendMessage(input) }}
                       className="flex gap-2"
@@ -344,7 +345,7 @@ export default function AIChatBot() {
                       </Button>
                     </form>
                     <p className="text-[10px] text-muted-foreground/40 mt-1.5 text-center">
-                      🤖 Powered by OpenAI • Trained on Irshad&apos;s profile
+                      🤖 Powered by AI • Trained on Irshad&apos;s profile
                     </p>
                   </div>
                 </motion.div>

@@ -2,28 +2,20 @@
 
 import { useRef, useEffect } from 'react'
 
-interface Particle {
+interface Star {
   x: number
   y: number
-  vx: number
-  vy: number
   size: number
   opacity: number
-  color: string
+  twinkleSpeed: number
+  twinklePhase: number
 }
-
-const COLORS = [
-  'rgba(0, 255, 136, ',
-  'rgba(0, 212, 255, ',
-  'rgba(168, 85, 247, ',
-  'rgba(236, 72, 153, ',
-]
 
 export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const particlesRef = useRef<Particle[]>([])
-  const mouseRef = useRef({ x: 0, y: 0 })
+  const starsRef = useRef<Star[]>([])
   const animationRef = useRef<number>(0)
+  const timeRef = useRef(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -32,85 +24,41 @@ export default function ParticleBackground() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const initParticles = () => {
-      const count = Math.min(Math.floor((canvas.width * canvas.height) / 15000), 80)
-      const particles: Particle[] = []
+    const initStars = () => {
+      const count = Math.min(Math.floor((canvas.width * canvas.height) / 8000), 150)
+      const stars: Star[] = []
       for (let i = 0; i < count; i++) {
-        particles.push({
+        stars.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          size: Math.random() * 2 + 0.5,
+          size: Math.random() * 1.5 + 0.3,
           opacity: Math.random() * 0.5 + 0.1,
-          color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          twinklePhase: Math.random() * Math.PI * 2,
         })
       }
-      particlesRef.current = particles
+      starsRef.current = stars
     }
 
     const handleResize = () => {
       canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      initParticles()
-    }
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY }
+      canvas.height = document.documentElement.scrollHeight
+      initStars()
     }
 
     const animate = () => {
       if (!ctx) return
+      timeRef.current += 1
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      const particles = particlesRef.current
-      const mouse = mouseRef.current
+      const stars = starsRef.current
 
-      // Draw connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < 120) {
-            ctx.beginPath()
-            ctx.strokeStyle = `rgba(0, 255, 136, ${0.06 * (1 - dist / 120)})`
-            ctx.lineWidth = 0.5
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.stroke()
-          }
-        }
-      }
-
-      // Draw & update particles
-      for (const p of particles) {
-        const dx = mouse.x - p.x
-        const dy = mouse.y - p.y
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < 150) {
-          p.vx -= dx * 0.00005
-          p.vy -= dy * 0.00005
-        }
-
-        p.x += p.vx
-        p.y += p.vy
-
-        if (p.x < 0) p.x = canvas.width
-        if (p.x > canvas.width) p.x = 0
-        if (p.y < 0) p.y = canvas.height
-        if (p.y > canvas.height) p.y = 0
+      for (const star of stars) {
+        const twinkle = Math.sin(timeRef.current * star.twinkleSpeed + star.twinklePhase)
+        const currentOpacity = star.opacity * (0.5 + 0.5 * twinkle)
 
         ctx.beginPath()
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3)
-        gradient.addColorStop(0, `${p.color}${p.opacity})`)
-        gradient.addColorStop(1, `${p.color}0)`)
-        ctx.fillStyle = gradient
-        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2)
-        ctx.fill()
-
-        ctx.beginPath()
-        ctx.fillStyle = `${p.color}${Math.min(p.opacity + 0.3, 1)})`
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(200, 220, 255, ${currentOpacity})`
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2)
         ctx.fill()
       }
 
@@ -119,13 +67,18 @@ export default function ParticleBackground() {
 
     handleResize()
     window.addEventListener('resize', handleResize)
-    window.addEventListener('mousemove', handleMouseMove)
     animationRef.current = requestAnimationFrame(animate)
+
+    // Resize canvas on scroll to cover full page
+    const observer = new ResizeObserver(() => {
+      canvas.height = document.documentElement.scrollHeight
+    })
+    observer.observe(document.documentElement)
 
     return () => {
       window.removeEventListener('resize', handleResize)
-      window.removeEventListener('mousemove', handleMouseMove)
       cancelAnimationFrame(animationRef.current)
+      observer.disconnect()
     }
   }, [])
 
@@ -133,7 +86,7 @@ export default function ParticleBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.6 }}
+      style={{ opacity: 0.4 }}
     />
   )
 }
