@@ -19,21 +19,18 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-  themeColor: '#080810',
+  themeColor: '#0b080c',
   viewportFit: 'cover',
 };
 
 export const metadata: Metadata = {
-  title: "Irshad Majeed Mir | AI Portfolio OS 2026",
-  description: "An immersive, AI-powered portfolio experience by Irshad Majeed Mir — AI/ML Engineer, Data Scientist, Full Stack Developer. Explore projects, take quizzes, chat with my AI clone, and discover why I'm the right hire.",
-  keywords: ["Irshad Majeed Mir", "AI Engineer", "Data Scientist", "Portfolio", "Machine Learning", "Full Stack Developer", "AI Portfolio"],
+  title: "Irshad Majeed Mir | AI/ML Engineer & Data Scientist",
+  description: "Portfolio of Irshad Majeed Mir — AI/ML Engineer, Data Scientist, and Founder of RuleMatrix. Building intelligent systems from Kupwara, Kashmir.",
+  keywords: ["Irshad Majeed Mir", "AI Engineer", "Data Scientist", "Machine Learning", "Portfolio", "RuleMatrix", "Full Stack Developer"],
   authors: [{ name: "Irshad Majeed Mir" }],
-  icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
-  },
   openGraph: {
-    title: "Irshad Majeed Mir | AI Portfolio OS",
-    description: "An immersive, AI-powered portfolio experience — explore, interact, and engage.",
+    title: "Irshad Majeed Mir | AI/ML Engineer",
+    description: "AI/ML Engineer & Data Scientist building intelligent systems.",
     type: "website",
   },
 };
@@ -47,6 +44,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        style={{ backgroundColor: '#0b080c', color: '#eae5ec' }}
       >
         <TooltipProvider>
           {children}

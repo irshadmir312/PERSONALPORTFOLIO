@@ -2,98 +2,146 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles, ChevronDown, Terminal, Bot, Database, Code2, BrainCircuit, Globe2 } from 'lucide-react'
+import {
+  ArrowRight,
+  Sparkles,
+  ChevronDown,
+  Terminal,
+  Bot,
+  Database,
+  Code2,
+  BrainCircuit,
+  Globe2,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { usePortfolioStore } from '@/store/portfolio'
 import { Badge } from '@/components/ui/badge'
 
-const titles = [
-  'Irshad Majeed Mir',
-  'AI/ML Engineer',
-  'Data Scientist',
-  'Full Stack Developer',
-]
+/* ──────────────── data ──────────────── */
+
+const subtitleWords = ['AI/ML Engineer', '&', 'Data Scientist']
 
 const stats = [
-  { label: 'Years', value: 2, suffix: '+' },
-  { label: 'Projects', value: 15, suffix: '+' },
-  { label: 'Clients', value: 10, suffix: '+' },
+  { label: 'Years of Experience', value: 2, suffix: '+' },
+  { label: 'Projects Completed', value: 15, suffix: '+' },
+  { label: 'Happy Clients', value: 10, suffix: '+' },
 ]
 
 const terminalLines = [
-  { prefix: '$', text: 'python train_model.py --epochs 100', color: 'text-emerald-400' },
+  { prefix: '$', text: 'python train_model.py --epochs 100', color: 'text-[#c2a4ff]' },
   { prefix: '>', text: 'Loading dataset... 50,000 records ✓', color: 'text-cyan-400' },
   { prefix: '>', text: 'Training Neural Network... [████████░░] 87%', color: 'text-purple-400' },
   { prefix: '>', text: 'Accuracy: 96.4% | F1: 0.95 | AUC: 0.98', color: 'text-pink-400' },
-  { prefix: '$', text: 'git push origin main ✨', color: 'text-emerald-400' },
+  { prefix: '$', text: 'git push origin main ✨', color: 'text-[#c2a4ff]' },
   { prefix: '>', text: 'Model deployed to production 🚀', color: 'text-amber-400' },
 ]
 
 const techIcons = [
-  { icon: BrainCircuit, label: 'AI/ML', color: 'text-emerald-400' },
+  { icon: BrainCircuit, label: 'AI/ML', color: 'text-[#c2a4ff]' },
   { icon: Database, label: 'Data', color: 'text-cyan-400' },
   { icon: Code2, label: 'Full Stack', color: 'text-purple-400' },
   { icon: Terminal, label: 'DevOps', color: 'text-pink-400' },
 ]
 
+/* ──────────────── animation helpers ──────────────── */
+
+const staggerContainer = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.15 },
+  },
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+  },
+}
+
+const fadeLeft = {
+  hidden: { opacity: 0, x: -50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+  },
+}
+
+const fadeRight = {
+  hidden: { opacity: 0, x: 50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+  },
+}
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.85 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
+}
+
+/* ──────────────── component ──────────────── */
+
 export default function HeroSection() {
   const { setChatOpen } = usePortfolioStore()
-  const [titleIndex, setTitleIndex] = useState(0)
-  const [displayText, setDisplayText] = useState('')
-  const [isDeleting, setIsDeleting] = useState(false)
   const [visibleLines, setVisibleLines] = useState(0)
   const [cursorVisible, setCursorVisible] = useState(true)
+  const [typingIndex, setTypingIndex] = useState(0)
+  const [typingText, setTypingText] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
 
-  // Typing effect
-  useEffect(() => {
-    const current = titles[titleIndex]
-    const timeout = setTimeout(
-      () => {
-        if (!isDeleting) {
-          setDisplayText(current.slice(0, displayText.length + 1))
-          if (displayText.length === current.length) {
-            setTimeout(() => setIsDeleting(true), 2000)
-          }
-        } else {
-          setDisplayText(current.slice(0, displayText.length - 1))
-          if (displayText.length === 0) {
-            setIsDeleting(false)
-            setTitleIndex((prev) => (prev + 1) % titles.length)
-          }
-        }
-      },
-      isDeleting ? 30 : 80
-    )
-    return () => clearTimeout(timeout)
-  }, [displayText, isDeleting, titleIndex])
+  /* — typing effect — */
+  const typingTarget = subtitleWords[typingIndex % subtitleWords.length]
 
-  // Cursor blink
   useEffect(() => {
-    const interval = setInterval(() => setCursorVisible((v) => !v), 500)
-    return () => clearInterval(interval)
+    const speed = isDeleting ? 40 : 70
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        setTypingText(typingTarget.slice(0, typingText.length + 1))
+        if (typingText.length === typingTarget.length) {
+          setTimeout(() => setIsDeleting(true), 2200)
+        }
+      } else {
+        setTypingText(typingTarget.slice(0, typingText.length - 1))
+        if (typingText.length === 0) {
+          setIsDeleting(false)
+          setTypingIndex((i) => i + 1)
+        }
+      }
+    }, speed)
+    return () => clearTimeout(timeout)
+  }, [typingText, isDeleting, typingTarget])
+
+  /* — cursor blink — */
+  useEffect(() => {
+    const id = setInterval(() => setCursorVisible((v) => !v), 530)
+    return () => clearInterval(id)
   }, [])
 
-  // Terminal animation
+  /* — terminal line reveal — */
   useEffect(() => {
     if (visibleLines < terminalLines.length) {
-      const timeout = setTimeout(() => setVisibleLines((v) => v + 1), 1200)
-      return () => clearTimeout(timeout)
-    } else {
-      const timeout = setTimeout(() => setVisibleLines(0), 3000)
-      return () => clearTimeout(timeout)
+      const id = setTimeout(() => setVisibleLines((v) => v + 1), 1100)
+      return () => clearTimeout(id)
     }
+    const id = setTimeout(() => setVisibleLines(0), 3200)
+    return () => clearTimeout(id)
   }, [visibleLines])
 
-  const scrollToProjects = () => {
+  /* — scroll helpers — */
+  const scrollToProjects = () =>
     document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const scrollToContact = () => {
+  const scrollToContact = () =>
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const isName = titleIndex === 0
 
   return (
     <section
@@ -101,242 +149,243 @@ export default function HeroSection() {
       ref={sectionRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background effects */}
-      <div className="absolute inset-0 gradient-bg" />
-      <div className="absolute inset-0 grid-pattern opacity-50" />
+      {/* ── ambient glows ── */}
+      <div className="pointer-events-none absolute -top-40 -left-40 h-[700px] w-[700px] rounded-full bg-[#c2a4ff]/[0.04] blur-[160px]" />
+      <div className="pointer-events-none absolute -bottom-32 -right-32 h-[500px] w-[500px] rounded-full bg-purple-600/[0.04] blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-500/[0.02] blur-[120px]" />
 
-      {/* Radial glow */}
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-emerald-500/5 blur-[120px]" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[120px]" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center gap-2 mb-6"
-            >
-              <Sparkles className="w-4 h-4 text-emerald-400" />
-              <span className="text-sm text-muted-foreground font-medium">
-                ✨ Available for opportunities
+      {/* ── main grid ── */}
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-20 pb-28 sm:px-6 lg:px-8"
+      >
+        <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+          {/* ───── left: text content ───── */}
+          <motion.div variants={fadeLeft} className="flex flex-col">
+            {/* availability badge */}
+            <motion.div variants={fadeUp} className="mb-8 flex items-center gap-2.5">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#c2a4ff] opacity-60" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#c2a4ff]" />
               </span>
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-sm font-medium text-[#8b8498]">
+                <Sparkles className="mr-1 inline h-3.5 w-3.5 text-[#c2a4ff]" />
+                Available for opportunities
+              </span>
             </motion.div>
 
-            <p className="text-muted-foreground text-lg mb-2">👋 Hi, I&apos;m</p>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-              <span className={`${isName ? 'neon-text text-emerald-400' : 'text-foreground'}`}>
-                {displayText}
-              </span>
-              <span className={`inline-block w-[3px] h-[0.8em] ml-1 bg-emerald-400 align-middle ${cursorVisible ? 'opacity-100' : 'opacity-0'}`} />
-            </h1>
-
+            {/* greeting line */}
             <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-lg sm:text-xl text-muted-foreground mb-3"
+              variants={fadeUp}
+              className="mb-1 text-sm font-light uppercase tracking-[3px] text-[#c2a4ff]"
+              style={{ fontVariantCaps: 'small-caps' }}
             >
-              🤖 AI/ML Engineer building real-world AI systems &amp; intelligent chatbots for businesses
+              Hello! I&apos;m
             </motion.p>
 
+            {/* name — stacked / overlapping style */}
+            <motion.div variants={fadeUp} className="mb-5">
+              <h1 className="leading-[0.95] tracking-tight">
+                {/* First name — bold gradient */}
+                <span className="gradient-text-purple block text-5xl font-extrabold sm:text-6xl md:text-7xl lg:text-[5.2rem] xl:text-[6rem]">
+                  IRSHAD
+                </span>
+                {/* Last name — slightly lighter weight, stacked below */}
+                <span className="mt-1 block text-4xl font-semibold text-[#eae5ec]/90 sm:text-5xl md:text-6xl lg:text-[4rem] xl:text-[4.6rem]">
+                  MAJEED MIR
+                </span>
+              </h1>
+            </motion.div>
+
+            {/* typing subtitle */}
+            <motion.div variants={fadeUp} className="mb-6 flex items-center gap-1 text-lg sm:text-xl md:text-2xl">
+              <span className="font-medium text-[#eae5ec]">{typingText}</span>
+              <span
+                className={`inline-block h-[1.15em] w-[3px] translate-y-[1px] bg-[#c2a4ff] ${cursorVisible ? 'opacity-100' : 'opacity-0'}`}
+              />
+            </motion.div>
+
+            {/* location tag */}
+            <motion.div variants={fadeUp} className="mb-6 flex items-center gap-2">
+              <Badge
+                variant="outline"
+                className="border-[#c2a4ff]/20 bg-[#c2a4ff]/[0.04] px-3 py-1 text-xs text-[#c2a4ff]"
+              >
+                <Globe2 className="mr-1 h-3 w-3" />
+                Kupwara, Kashmir
+              </Badge>
+              <Badge
+                variant="outline"
+                className="border-cyan-500/20 bg-cyan-500/[0.04] px-3 py-1 text-xs text-cyan-400"
+              >
+                Available for UK &amp; Remote Roles
+              </Badge>
+            </motion.div>
+
+            {/* description */}
             <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-sm sm:text-base text-muted-foreground/70 mb-8 max-w-lg"
+              variants={fadeUp}
+              className="mb-8 max-w-lg text-[15px] leading-relaxed text-[#8b8498] sm:text-base"
             >
-              🏔️ From Kupwara, Kashmir to building AI solutions that impact businesses globally. Specializing in fraud detection, NLP pipelines, recommendation engines, and full-stack AI applications.
+              Building intelligent AI systems, chatbots, and data-driven applications
+              that create real business impact. Specializing in fraud detection, NLP
+              pipelines, recommendation engines, and full-stack AI solutions.
             </motion.p>
 
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="flex flex-wrap gap-3 mb-4"
-            >
+            {/* CTA buttons */}
+            <motion.div variants={fadeUp} className="mb-10 flex flex-wrap gap-3">
               <Button
                 onClick={scrollToProjects}
                 size="lg"
-                className="bg-emerald-500 hover:bg-emerald-400 text-black font-semibold gap-2 neon-glow"
+                className="gap-2 rounded-xl border-0 bg-[#c2a4ff] font-semibold text-[#0b080c] shadow-lg shadow-[#c2a4ff]/20 transition-all duration-300 hover:bg-[#d4bfff] hover:shadow-xl hover:shadow-[#c2a4ff]/30"
               >
-                🚀 Explore My Work
-                <ArrowRight className="w-4 h-4" />
+                Explore My Work
+                <ArrowRight className="h-4 w-4" />
               </Button>
               <Button
                 onClick={scrollToContact}
                 size="lg"
                 variant="outline"
-                className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 gap-2"
+                className="gap-2 rounded-xl border-[#c2a4ff]/30 text-[#c2a4ff] transition-all duration-300 hover:border-[#c2a4ff]/60 hover:bg-[#c2a4ff]/10"
               >
-                💬 Let&apos;s Connect
+                Let&apos;s Connect
               </Button>
               <Button
                 onClick={() => setChatOpen(true)}
                 size="lg"
                 variant="outline"
-                className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 gap-2"
+                className="gap-2 rounded-xl border-[#c2a4ff]/30 text-[#c2a4ff] transition-all duration-300 hover:border-[#c2a4ff]/60 hover:bg-[#c2a4ff]/10"
               >
-                <Bot className="w-4 h-4" />
-                Chat with AI Clone 🤖
+                <Bot className="h-4 w-4" />
+                Chat with AI Clone
               </Button>
             </motion.div>
 
-            {/* Available Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="mb-10"
-            >
-              <Badge
-                variant="outline"
-                className="gap-1.5 text-xs border-cyan-500/30 text-cyan-400 bg-cyan-500/5 px-3 py-1.5"
-              >
-                <Globe2 className="w-3 h-3" />
-                🌍 Available for UK &amp; Remote Roles
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              </Badge>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="flex gap-6 sm:gap-8"
-            >
+            {/* stats row */}
+            <motion.div variants={fadeUp} className="flex gap-8 sm:gap-12">
               {stats.map((stat) => (
                 <div key={stat.label}>
-                  <div className="text-2xl sm:text-3xl font-bold text-foreground">
+                  <div className="text-2xl font-bold text-[#eae5ec] sm:text-3xl">
                     <AnimatedCounter value={stat.value} />
-                    <span className="text-emerald-400">{stat.suffix}</span>
+                    <span className="text-[#c2a4ff]">{stat.suffix}</span>
                   </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="mt-0.5 text-xs text-[#8b8498] sm:text-sm">{stat.label}</p>
                 </div>
               ))}
             </motion.div>
           </motion.div>
 
-          {/* Right Content - Terminal */}
+          {/* ───── right: terminal + icons (desktop) ───── */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+            variants={fadeRight}
             className="hidden lg:block"
           >
-            {/* Terminal Window */}
-            <div className="glass-strong rounded-xl overflow-hidden neon-border">
-              {/* Terminal Header */}
-              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5">
-                <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                <span className="ml-3 text-xs font-mono text-muted-foreground">
-                  💻 irshad@ai-portfolio ~ %
+            {/* terminal window */}
+            <motion.div variants={scaleIn} className="glass overflow-hidden rounded-2xl neon-border">
+              {/* title bar */}
+              <div className="flex items-center gap-2 border-b border-white/[0.06] px-5 py-3.5">
+                <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                <div className="h-3 w-3 rounded-full bg-[#c2a4ff]/80" />
+                <span className="ml-3 font-mono text-xs text-[#8b8498]">
+                  irshad@ai-portfolio ~ %
                 </span>
               </div>
 
-              {/* Terminal Body */}
-              <div className="p-5 font-mono text-sm space-y-2 min-h-[300px]">
+              {/* terminal body */}
+              <div className="min-h-[320px] space-y-2.5 p-5 font-mono text-[13px] leading-relaxed">
                 {terminalLines.slice(0, visibleLines).map((line, i) => (
                   <motion.div
                     key={`${i}-${visibleLines}`}
-                    initial={{ opacity: 0, x: -10 }}
+                    initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.35, ease: 'easeOut' }}
                   >
-                    <span className="text-muted-foreground/50">{line.prefix} </span>
+                    <span className="text-[#8b8498]/60">{line.prefix} </span>
                     <span className={line.color}>{line.text}</span>
                   </motion.div>
                 ))}
-                {visibleLines === terminalLines.length && (
+
+                {/* blinking cursor at the end */}
+                {visibleLines > 0 && (
                   <motion.span
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="inline-block w-2 h-4 bg-emerald-400 animate-blink"
+                    className="inline-block h-4 w-2 translate-y-[2px] bg-[#c2a4ff] animate-pulse"
                   />
                 )}
               </div>
-            </div>
+            </motion.div>
 
-            {/* Tech Stack Icons */}
-            <div className="flex justify-center gap-4 mt-6">
+            {/* tech icons row */}
+            <div className="mt-7 flex justify-center gap-4">
               {techIcons.map((tech, i) => (
                 <motion.div
                   key={tech.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 + i * 0.1 }}
-                  whileHover={{ scale: 1.1, y: -4 }}
-                  className="flex flex-col items-center gap-2 glass rounded-xl px-4 py-3 cursor-default"
+                  transition={{ delay: 1 + i * 0.1, duration: 0.5 }}
+                  whileHover={{ scale: 1.12, y: -6 }}
+                  className="glass flex cursor-default flex-col items-center gap-2 rounded-xl px-5 py-3.5 transition-colors duration-300 hover:border-[#c2a4ff]/20"
                 >
-                  <tech.icon className={`w-6 h-6 ${tech.color}`} />
-                  <span className="text-[10px] text-muted-foreground">{tech.label}</span>
+                  <tech.icon className={`h-6 w-6 ${tech.color}`} />
+                  <span className="text-[10px] font-medium text-[#8b8498]">{tech.label}</span>
                 </motion.div>
               ))}
             </div>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Scroll Indicator */}
+      {/* ── scroll indicator ── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        transition={{ delay: 2, duration: 0.8 }}
+        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2"
       >
-        <span className="text-xs text-muted-foreground/50 tracking-widest uppercase">
-          📜 Scroll to explore
+        <span className="text-[10px] uppercase tracking-[3px] text-[#8b8498]/50">
+          Scroll to explore
         </span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <ChevronDown className="w-5 h-5 text-emerald-400/50" />
+          <ChevronDown className="h-5 w-5 text-[#c2a4ff]/40" />
         </motion.div>
       </motion.div>
     </section>
   )
 }
 
-function AnimatedCounter({ value, delay = 1000 }: { value: number; delay?: number }) {
+/* ──────────────── animated counter ──────────────── */
+
+function AnimatedCounter({ value, delay = 1200 }: { value: number; delay?: number }) {
   const [count, setCount] = useState(0)
-  const hasStarted = useRef(false)
+  const started = useRef(false)
 
   useEffect(() => {
-    if (hasStarted.current) return
-    hasStarted.current = true
+    if (started.current) return
+    started.current = true
 
-    const startTimer = setTimeout(() => {
-      let current = 0
-      const duration = 2000
-      const step = value / (duration / 16)
-
-      const timer = setInterval(() => {
-        current += step
-        if (current >= value) {
+    const start = setTimeout(() => {
+      let cur = 0
+      const step = value / (2200 / 16)
+      const id = setInterval(() => {
+        cur += step
+        if (cur >= value) {
           setCount(value)
-          clearInterval(timer)
+          clearInterval(id)
         } else {
-          setCount(Math.floor(current))
+          setCount(Math.floor(cur))
         }
       }, 16)
-
-      return () => clearInterval(timer)
+      return () => clearInterval(id)
     }, delay)
 
-    return () => clearTimeout(startTimer)
+    return () => clearTimeout(start)
   }, [value, delay])
 
   return <>{count}</>

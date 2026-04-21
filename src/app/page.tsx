@@ -5,24 +5,12 @@ import ParticleBackground from '@/components/portfolio/ParticleBackground'
 import Navigation from '@/components/portfolio/Navigation'
 import HeroSection from '@/components/portfolio/HeroSection'
 import PersonalStory from '@/components/portfolio/PersonalStory'
-import ModeSelector from '@/components/portfolio/ModeSelector'
-import JourneyMap from '@/components/portfolio/JourneyMap'
-import ProjectLab from '@/components/portfolio/ProjectLab'
-import CaseStudies from '@/components/portfolio/CaseStudies'
-import Services from '@/components/portfolio/Services'
-import WhyHireMe from '@/components/portfolio/WhyHireMe'
-import KillerQuotes from '@/components/portfolio/KillerQuotes'
-import IslamicQuotes from '@/components/portfolio/IslamicQuotes'
 import SkillsShowcase from '@/components/portfolio/SkillsShowcase'
-import Certifications from '@/components/portfolio/Certifications'
-import LiveDashboard from '@/components/portfolio/LiveDashboard'
-import SkillTesting from '@/components/portfolio/SkillTesting'
+import ProjectLab from '@/components/portfolio/ProjectLab'
+import Services from '@/components/portfolio/Services'
 import Testimonials from '@/components/portfolio/Testimonials'
-import BlogInsights from '@/components/portfolio/BlogInsights'
-import GamificationPanel from '@/components/portfolio/GamificationPanel'
 import ConnectMe from '@/components/portfolio/ConnectMe'
 import AIChatBot from '@/components/portfolio/AIChatBot'
-import WhatsAppButton from '@/components/portfolio/WhatsAppButton'
 import Footer from '@/components/portfolio/Footer'
 import { usePortfolioStore } from '@/store/portfolio'
 
@@ -34,48 +22,54 @@ export default function Home() {
   }, [visitSection])
 
   return (
-    <div className="min-h-screen flex flex-col relative gradient-bg">
+    <div className="min-h-screen flex flex-col relative overflow-x-hidden">
+      {/* 3D Floating Orbs */}
+      <div className="orb-1" />
+      <div className="orb-2" />
+      <div className="orb-3" />
+
+      {/* Nav fade gradient */}
+      <div className="nav-fade" />
+
+      {/* Particle Background */}
       <ParticleBackground />
+
+      {/* Navigation */}
       <Navigation />
 
+      {/* Main Content */}
       <main className="flex-1 relative z-10">
         <HeroSection />
 
+        <div className="divider-gradient" />
+
         <PersonalStory />
 
-        <ModeSelector />
-
-        <ProjectLab />
-
-        <CaseStudies />
-
-        <Services />
-
-        <WhyHireMe />
-
-        <KillerQuotes />
-
-        <IslamicQuotes />
+        <div className="divider-gradient" />
 
         <SkillsShowcase />
 
-        <Certifications />
+        <div className="divider-gradient" />
 
-        <LiveDashboard />
+        <ProjectLab />
 
-        <SkillTesting />
+        <div className="divider-gradient" />
+
+        <Services />
+
+        <div className="divider-gradient" />
 
         <Testimonials />
 
-        <BlogInsights />
-
-        <GamificationPanel />
+        <div className="divider-gradient" />
 
         <ConnectMe />
       </main>
 
-      <WhatsAppButton />
+      {/* Chatbot */}
       <AIChatBot />
+
+      {/* Footer */}
       <Footer />
     </div>
   )

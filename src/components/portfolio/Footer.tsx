@@ -2,12 +2,10 @@
 
 import { motion } from 'framer-motion'
 import { Github, Linkedin, Mail, Heart, ArrowUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 
 const quickLinks = [
   { label: 'Home', href: '#hero' },
-  { label: 'Journey', href: '#journey' },
+  { label: 'About', href: '#about' },
   { label: 'Projects', href: '#projects' },
   { label: 'Skills', href: '#skills' },
   { label: 'Contact', href: '#contact' },
@@ -30,38 +28,90 @@ export default function Footer() {
   }
 
   return (
-    <footer className="relative mt-20">
-      <div className="glass-strong border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-          <div className="grid sm:grid-cols-3 gap-8 sm:gap-12">
-            {/* Left - Brand */}
-            <div className="sm:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-400 flex items-center justify-center font-mono font-bold text-sm text-black">
+    <footer className="relative mt-auto">
+      {/* Divider line */}
+      <div
+        className="w-full"
+        style={{ borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}
+      />
+
+      {/* Back to top button */}
+      <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-10">
+        <motion.button
+          onClick={scrollToTop}
+          whileHover={{ scale: 1.1, y: -2 }}
+          whileTap={{ scale: 0.9 }}
+          className="w-11 h-11 rounded-full flex items-center justify-center shadow-lg cursor-pointer"
+          style={{
+            background: '#c2a4ff',
+            color: '#0b080c',
+            border: '1px solid rgba(255, 255, 255, 0.06)',
+          }}
+          aria-label="Back to top"
+        >
+          <ArrowUp className="w-4 h-4" strokeWidth={2.5} />
+        </motion.button>
+      </div>
+
+      {/* Footer content */}
+      <div
+        className="backdrop-blur-xl"
+        style={{
+          background: 'rgba(11, 8, 12, 0.96)',
+        }}
+      >
+        <div className="max-w-6xl mx-auto px-6 py-14 sm:py-16">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8">
+            {/* Left Column — Brand */}
+            <div>
+              <div className="flex items-center gap-3 mb-5">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center font-mono font-bold text-sm tracking-tight"
+                  style={{
+                    background: 'linear-gradient(135deg, #c2a4ff 0%, #9b7de8 100%)',
+                    color: '#0b080c',
+                  }}
+                >
                   IM
                 </div>
-                <span className="text-sm font-semibold">
-                  Irshad<span className="text-emerald-400">.dev</span>
+                <span
+                  className="text-base font-semibold tracking-tight"
+                  style={{ color: '#eae5ec' }}
+                >
+                  Irshad
+                  <span style={{ color: '#c2a4ff' }}>.dev</span>
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                AI/ML Engineer & Data Scientist building intelligent systems
-                that transform data into decisions.
-              </p>
-              <p className="text-xs text-muted-foreground/50">
-                © {new Date().getFullYear()} Irshad Majeed Mir. All rights reserved.
+              <p
+                className="text-sm leading-relaxed max-w-xs"
+                style={{ color: '#8b8498' }}
+              >
+                Building thoughtful digital experiences with clean code and
+                modern design.
               </p>
             </div>
 
-            {/* Center - Quick Links */}
-            <div className="sm:col-span-1">
-              <h4 className="text-sm font-semibold mb-4">Quick Links</h4>
-              <nav className="flex flex-col gap-2">
+            {/* Center Column — Quick Links */}
+            <div className="sm:text-center">
+              <h4
+                className="text-xs font-semibold uppercase tracking-widest mb-5"
+                style={{ color: '#c2a4ff' }}
+              >
+                Navigation
+              </h4>
+              <nav className="flex flex-col gap-3">
                 {quickLinks.map((link) => (
                   <button
                     key={link.href}
                     onClick={() => scrollToSection(link.href)}
-                    className="text-sm text-muted-foreground hover:text-emerald-400 transition-colors text-left w-fit"
+                    className="text-sm text-left sm:text-center w-fit sm:w-auto cursor-pointer transition-colors duration-200"
+                    style={{ color: '#8b8498' }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.color = '#c2a4ff')
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.color = '#8b8498')
+                    }
                   >
                     {link.label}
                   </button>
@@ -69,48 +119,85 @@ export default function Footer() {
               </nav>
             </div>
 
-            {/* Right - Social */}
-            <div className="sm:col-span-1">
-              <h4 className="text-sm font-semibold mb-4">Connect</h4>
-              <div className="flex gap-2 mb-4">
+            {/* Right Column — Social & Credit */}
+            <div className="sm:text-right">
+              <h4
+                className="text-xs font-semibold uppercase tracking-widest mb-5"
+                style={{ color: '#c2a4ff' }}
+              >
+                Connect
+              </h4>
+              <div className="flex sm:justify-end gap-3 mb-5">
                 {socialLinks.map((social) => (
                   <motion.a
                     key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.1, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-10 h-10 rounded-lg glass flex items-center justify-center text-muted-foreground hover:text-emerald-400 hover:border-emerald-500/20 transition-colors"
+                    whileHover={{ scale: 1.15, y: -3 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors duration-200"
+                    style={{
+                      color: '#8b8498',
+                      background: 'rgba(255, 255, 255, 0.04)',
+                      border: '1px solid rgba(255, 255, 255, 0.06)',
+                    }}
+                    onHoverStart={(e) => {
+                      const el = e.currentTarget as HTMLElement
+                      el.style.color = '#c2a4ff'
+                      el.style.background = 'rgba(194, 164, 255, 0.1)'
+                      el.style.borderColor = 'rgba(194, 164, 255, 0.25)'
+                    }}
+                    onHoverEnd={(e) => {
+                      const el = e.currentTarget as HTMLElement
+                      el.style.color = '#8b8498'
+                      el.style.background = 'rgba(255, 255, 255, 0.04)'
+                      el.style.borderColor = 'rgba(255, 255, 255, 0.06)'
+                    }}
                     aria-label={social.label}
                   >
                     <social.icon className="w-4 h-4" />
                   </motion.a>
                 ))}
               </div>
-              <p className="text-sm text-muted-foreground">
-                Let&apos;s build something amazing together.
+              <p
+                className="text-sm leading-relaxed"
+                style={{ color: '#8b8498' }}
+              >
+                Designed &amp; Developed by{' '}
+                <span style={{ color: '#eae5ec' }}>
+                  Irshad Majeed Mir
+                </span>
               </p>
             </div>
           </div>
 
-          <Separator className="my-8 bg-white/5" />
+          {/* Divider */}
+          <div
+            className="w-full my-8"
+            style={{ borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}
+          />
 
-          {/* Bottom Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
-              Built with <Heart className="w-3 h-3 text-red-400 fill-red-400" /> and <span className="text-emerald-400">AI</span>
-            </p>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={scrollToTop}
-              className="text-xs text-muted-foreground hover:text-emerald-400 gap-1"
+          {/* Copyright */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p
+              className="text-xs flex items-center gap-1.5"
+              style={{ color: '#8b8498' }}
             >
-              <ArrowUp className="w-3 h-3" />
-              Back to top
-            </Button>
+              © {new Date().getFullYear()} Irshad Majeed Mir. All rights
+              reserved.
+            </p>
+            <p
+              className="text-xs flex items-center gap-1.5"
+              style={{ color: '#8b8498' }}
+            >
+              Crafted with{' '}
+              <Heart
+                className="w-3 h-3 inline-block"
+                style={{ color: '#c2a4ff', fill: '#c2a4ff' }}
+              />{' '}
+              and attention to detail
+            </p>
           </div>
         </div>
       </div>
