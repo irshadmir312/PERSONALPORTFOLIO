@@ -100,17 +100,20 @@ export async function POST(req: NextRequest) {
 
     await transporter.sendMail(mailOptions)
 
-    // 2. Store contact message in database
-    const { db } = await import('@/lib/db')
-
-    await db.contactRequest.create({
-      data: {
-        name,
-        email: recipientEmail,
-        phone,
-        message,
-      },
-    })
+    // 2. Store contact message in database (non-blocking — don't fail if DB unavailable)
+    try {
+      const { db } = await import('@/lib/db')
+      await db.contactRequest.create({
+        data: {
+          name,
+          email: recipientEmail,
+          phone,
+          message,
+        },
+      })
+    } catch (dbError) {
+      console.warn('Database save skipped (non-critical):', dbError)
+    }
 
     return NextResponse.json(
       { success: true, message: 'Message sent successfully! I will get back to you soon.' },
