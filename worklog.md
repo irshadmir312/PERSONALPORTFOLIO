@@ -28,3 +28,25 @@ Stage Summary:
 - Contact form data is saved to database via Prisma
 - Quiz has 40 questions with timer and domain selection
 - Project Lab has 4 interactive demos (Fraud Detection is full interactive)
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Fix contact form email sending - add nodemailer SMTP integration
+
+Work Log:
+- Read existing contact API route (was only saving to database, not sending emails)
+- Read ContactForm.tsx component (frontend already working correctly)
+- Confirmed nodemailer is already installed (v8.0.5)
+- Updated /api/contact/route.ts to send emails via nodemailer using SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS env vars
+- Email is sent to SMTP_USER (the user's Gmail) with a beautiful styled HTML template
+- Still stores contact data in Prisma database (dual functionality)
+- Added proper error handling with descriptive error messages
+- Ran lint and TypeScript check - no errors
+
+Stage Summary:
+- Updated /api/contact/route.ts with nodemailer SMTP email sending
+- Uses env vars: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+- Sends styled HTML email with contact details (name, phone, message, timestamp)
+- For Gmail: user needs to use App Password (not regular password) and have 2FA enabled
+- Port 465 = secure/SSL, Port 587 = TLS (auto-detected from SMTP_PORT)
