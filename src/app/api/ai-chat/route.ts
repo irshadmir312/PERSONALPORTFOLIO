@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // ============================================================
-// 🔑 AI CHAT API — z-ai-web-dev-sdk (GLM Models - FREE)
+// 🔑 AI CHAT API — Direct fetch (bypasses broken ZAI.create())
 // ============================================================
 // Vercel Environment Variables:
 //   AI_API_KEY=your-api-key
 //   AI_MODEL=glm-4.7-flash
 // ============================================================
+
+// The Z.AI SDK's create() method ignores passed arguments and always
+// reads from .z-ai-config file. On Vercel, that file doesn't exist.
+// So we use direct fetch() with the API key from environment variables.
+
+const ZAI_BASE_URL = 'https://open.bigmodel.cn/api/paas/v4'
 
 const MODE_PROMPTS: Record<string, string> = {
   recruiter:
@@ -140,32 +146,42 @@ export async function POST(req: NextRequest) {
     }
     messages.push({ role: 'user', content: message })
 
-    // Call via z-ai-web-dev-sdk (handles all URLs automatically — fast!)
+    // Direct fetch to GLM API — bypasses ZAI.create() which needs .z-ai-config file
     let aiResponseText: string
     try {
-      const ZAI = (await import('z-ai-web-dev-sdk')).default
-      const zai = await ZAI.create({ apiKey })
-      const response = await zai.chat.completions.create({
-        messages,
-        model,
-        max_tokens: 1500,
-        temperature: 0.8,
+      const response = await fetch(`${ZAI_BASE_URL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages,
+          max_tokens: 1500,
+          temperature: 0.8,
+        }),
       })
 
-      if (typeof response === 'string') {
-        aiResponseText = response
-      } else if (response?.choices?.[0]?.message?.content) {
-        aiResponseText = response.choices[0].message.content
-      } else if (response?.content) {
-        aiResponseText = response.content
-      } else if (response?.message?.content) {
-        aiResponseText = response.message.content
+      if (!response.ok) {
+        const errorBody = await response.text()
+        console.error('GLM API error:', response.status, errorBody)
+        return NextResponse.json(
+          { error: `GLM API error (${response.status}): ${errorBody.substring(0, 200)}`, apiStatus: 'disconnected' },
+          { status: 500 }
+        )
+      }
+
+      const data = await response.json()
+
+      if (data?.choices?.[0]?.message?.content) {
+        aiResponseText = data.choices[0].message.content
       } else {
-        aiResponseText = JSON.stringify(response)
+        aiResponseText = JSON.stringify(data)
       }
     } catch (apiError: unknown) {
       const errMsg = apiError instanceof Error ? apiError.message : 'Unknown error'
-      console.error('AI SDK error:', errMsg)
+      console.error('AI API error:', errMsg)
       return NextResponse.json(
         { error: `API error: ${errMsg}`, apiStatus: 'disconnected' },
         { status: 500 }
