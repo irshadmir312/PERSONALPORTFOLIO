@@ -1,0 +1,50 @@
+"use client";
+
+import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+
+export default function KashmiriZabanPage() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  return (
+    <div className="min-h-screen bg-[#0b080c] flex flex-col">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-50 bg-[#0b080c]/95 backdrop-blur-sm border-b border-white/10 px-4 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-[#c2a4ff] hover:text-[#d4bfff] transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm font-medium">Back to Portfolio</span>
+          </Link>
+          <h1 className="text-lg font-semibold text-white">
+            کٲشُر لُغَت / Kashmiri Dictionary
+          </h1>
+          <div className="w-[120px]" />
+        </div>
+      </div>
+
+      {/* Loading Spinner */}
+      {isLoading && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-3 border-[#c2a4ff]/30 border-t-[#c2a4ff] rounded-full animate-spin" />
+            <p className="text-white/60 text-sm">Loading Dictionary...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Iframe */}
+      <iframe
+        src="https://irshadmir312.space-z.ai/"
+        className="flex-1 w-full border-0"
+        style={{ minHeight: "calc(100vh - 60px)" }}
+        onLoad={() => setIsLoading(false)}
+        title="Kashmiri Dictionary"
+        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+      />
+    </div>
+  );
+}
