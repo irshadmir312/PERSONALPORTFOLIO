@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, MessageSquare } from 'lucide-react'
+import { Menu, X, MessageSquare, BookOpen } from 'lucide-react'
+import Link from 'next/link'
 import { usePortfolioStore } from '@/store/portfolio'
 
 const navLinks = [
@@ -13,6 +14,10 @@ const navLinks = [
   { label: 'Quiz', href: '#quiz' },
   { label: 'Services', href: '#services' },
   { label: 'Contact', href: '#contact' },
+]
+
+const externalLinks = [
+  { label: 'Kashmiri Zaban', href: '/kashmiri-zaban', icon: BookOpen },
 ]
 
 export default function Navigation() {
@@ -161,6 +166,37 @@ export default function Navigation() {
                       }}
                     />
                   </button>
+                )
+              })}
+
+              {/* Separator */}
+              <div
+                className="w-px h-4 mx-1.5"
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+              />
+
+              {/* External Navigation Links */}
+              {externalLinks.map((link) => {
+                const Icon = link.icon
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="relative flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium tracking-wide transition-all duration-300 rounded-md"
+                    style={{
+                      color: '#c2a4ff',
+                      background: 'rgba(194, 164, 255, 0.06)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(194, 164, 255, 0.12)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(194, 164, 255, 0.06)'
+                    }}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {link.label}
+                  </Link>
                 )
               })}
             </div>
@@ -362,6 +398,57 @@ export default function Navigation() {
                         />
                       )}
                     </motion.button>
+                  )
+                })}
+
+                {/* Separator */}
+                <div
+                  className="w-full my-2"
+                  style={{
+                    height: '1px',
+                    background: 'rgba(194, 164, 255, 0.1)',
+                  }}
+                />
+
+                {/* External Links in Mobile */}
+                {externalLinks.map((link, i) => {
+                  const Icon = link.icon
+                  return (
+                    <motion.div
+                      key={link.href}
+                      initial={{ opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 12 }}
+                      transition={{
+                        duration: 0.35,
+                        delay: 0.08 + (navLinks.length + i) * 0.04,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      className="w-full"
+                    >
+                      <Link
+                        href={link.href}
+                        onClick={() => {
+                          setMobileOpen(false)
+                          document.body.style.overflow = ''
+                        }}
+                        className="w-full flex items-center gap-3 text-left transition-all duration-300"
+                        style={{
+                          color: '#c2a4ff',
+                          padding: '14px 20px',
+                          fontSize: '18px',
+                          fontWeight: 600,
+                          letterSpacing: '0.02em',
+                          borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
+                          background: 'rgba(194, 164, 255, 0.04)',
+                          maxWidth: '100%',
+                          boxSizing: 'border-box',
+                        }}
+                      >
+                        <Icon className="w-5 h-5 shrink-0" />
+                        <span className="block w-full truncate">{link.label}</span>
+                      </Link>
+                    </motion.div>
                   )
                 })}
               </div>
