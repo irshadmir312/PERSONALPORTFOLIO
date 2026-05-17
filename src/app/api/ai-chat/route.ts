@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // reads from .z-ai-config file. On Vercel, that file doesn't exist.
 // So we use direct fetch() with the API key from environment variables.
 
-const ZAI_BASE_URL = 'https://open.bigmodel.cn/api/paas/v4'
+const ZAI_BASE_URL = 'https://api.openai.com/v1'
 
 const MODE_PROMPTS: Record<string, string> = {
   recruiter:
