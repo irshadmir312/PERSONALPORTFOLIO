@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
     }
 
     const apiKey = process.env.AI_API_KEY
-    const model = process.env.AI_MODEL || 'glm-4.7-flash'
+    const model = process.env.AI_MODEL || 'gpt-4o-mini'
 
     // Health check
     if (healthCheck) {
